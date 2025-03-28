@@ -5,12 +5,10 @@ services:
     image: mysql:8.0
     container_name: campeonato_mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: campeonato
+      MYSQL_DATABASE: meucampeonato
     ports:
-      - "${DB_PORT}:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
@@ -30,15 +28,14 @@ services:
       mysql_db:
         condition: service_healthy
     ports:
-      - "${PORT}:${PORT}"
+      - "3000:3000"
     environment:
       - DB_HOST=mysql_db
       - DB_PORT=3306
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
-      - PORT=${PORT}
-      - NODE_ENV=development
+      - DB_USERNAME=root
+      - DB_PASSWORD=campeonato
+      - DB_DATABASE=meucampeonato
+      - PORT=3000
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

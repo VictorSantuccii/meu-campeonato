@@ -22,9 +22,6 @@ COPY . .
 
 RUN npm run build
 
-ENV NODE_ENV=production
-ENV PORT=${PORT}
-
-EXPOSE ${PORT}
+EXPOSE 3000
 
 CMD ["node", "dist/main.js"]
