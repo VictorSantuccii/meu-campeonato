@@ -31,17 +31,17 @@ export class PartidaService {
       throw new BadRequestException('Esta partida já foi jogada');
     }
 
+    
     partida.gols_casa = Math.floor(Math.random() * 6);
     partida.gols_visitante = Math.floor(Math.random() * 6);
     partida.jogada = true;
 
     await this.atualizarPontuacao(partida);
     
+   
     if (partida.fase === FasePartida.FINAL) {
       await this.definirCampeao(partida);
-    }
-
-    if (partida.fase === FasePartida.TERCEIRO_LUGAR) {
+    } else if (partida.fase === FasePartida.TERCEIRO_LUGAR) {
       await this.definirTerceiroColocado(partida);
     }
 
@@ -49,10 +49,13 @@ export class PartidaService {
   }
 
   private async atualizarPontuacao(partida: Partida): Promise<void> {
+   
     partida.time_casa.pontos += partida.gols_casa;
     partida.time_casa.pontos -= partida.gols_visitante;
     partida.time_visitante.pontos += partida.gols_visitante;
     partida.time_visitante.pontos -= partida.gols_casa;
+    
+   
     await this.timeRepository.save([partida.time_casa, partida.time_visitante]);
   }
 
@@ -60,12 +63,14 @@ export class PartidaService {
     const campeonato = partida.campeonato;
     
     if (partida.gols_casa === partida.gols_visitante) {
+     
       const vencedor = this.determinarVencedorEmEmpate(partida);
       campeonato.campeaoId = vencedor.id;
       campeonato.viceId = vencedor.id === partida.time_casa.id 
         ? partida.time_visitante.id 
         : partida.time_casa.id;
     } else {
+      
       campeonato.campeaoId = partida.gols_casa > partida.gols_visitante 
         ? partida.time_casa.id 
         : partida.time_visitante.id;
@@ -111,7 +116,7 @@ export class PartidaService {
       throw new BadRequestException(`As partidas da ${proximaFase} já foram criadas`);
     }
 
- 
+    
     const partidasFaseAtual = campeonato.partidas.filter(
       p => p.fase === faseAtual && p.jogada
     );
@@ -134,7 +139,7 @@ export class PartidaService {
         )
       : [];
 
-  
+    
     const novasPartidas = this.gerarPartidasFaseSeguinte(
       vencedores,
       perdedores,
@@ -146,7 +151,7 @@ export class PartidaService {
   }
 
   private determinarFaseAtual(partidas: Partida[]): FasePartida {
-
+    
     const partidasQuartas = partidas.filter(p => p.fase === FasePartida.QUARTAS_FINAL);
     if (partidasQuartas.length === 4) {
       const quartasConcluidas = partidasQuartas.filter(p => p.jogada).length;
@@ -155,7 +160,7 @@ export class PartidaService {
       }
     }
 
-   
+    
     const partidasSemi = partidas.filter(p => p.fase === FasePartida.SEMI_FINAL);
     if (partidasSemi.length === 2) {
       const semiConcluidas = partidasSemi.filter(p => p.jogada).length;
@@ -164,18 +169,19 @@ export class PartidaService {
       }
     }
 
+    
     const partidaTerceiro = partidas.find(p => p.fase === FasePartida.TERCEIRO_LUGAR);
     if (partidaTerceiro && !partidaTerceiro.jogada) {
       return FasePartida.TERCEIRO_LUGAR;
     }
 
-   
+  
     const partidaFinal = partidas.find(p => p.fase === FasePartida.FINAL);
     if (partidaFinal && !partidaFinal.jogada) {
       return FasePartida.FINAL;
     }
 
-   
+ 
     if (partidasQuartas.length === 4 && partidasQuartas.every(p => p.jogada)) {
       return partidasSemi.length === 0 ? FasePartida.QUARTAS_FINAL : FasePartida.SEMI_FINAL;
     }
@@ -189,9 +195,12 @@ export class PartidaService {
 
   private obterProximaFase(faseAtual: FasePartida): FasePartida {
     switch (faseAtual) {
-      case FasePartida.QUARTAS_FINAL: return FasePartida.SEMI_FINAL;
-      case FasePartida.SEMI_FINAL: return FasePartida.FINAL;
-      default: throw new BadRequestException('Transição de fase inválida');
+      case FasePartida.QUARTAS_FINAL: 
+        return FasePartida.SEMI_FINAL;
+      case FasePartida.SEMI_FINAL: 
+        return FasePartida.FINAL;
+      default: 
+        throw new BadRequestException('Transição de fase inválida');
     }
   }
 
@@ -215,7 +224,7 @@ export class PartidaService {
     const proximaFase = this.obterProximaFase(faseAtual);
 
     if (proximaFase === FasePartida.SEMI_FINAL && vencedores.length === 4) {
-    
+      
       for (let i = 0; i < 2; i++) {
         novasPartidas.push(this.partidaRepository.create({
           time_casa: vencedores[i * 2],
@@ -234,7 +243,6 @@ export class PartidaService {
         campeonato
       }));
 
-     
       novasPartidas.push(this.partidaRepository.create({
         time_casa: perdedores[0],
         time_visitante: perdedores[1],
@@ -247,11 +255,13 @@ export class PartidaService {
   }
 
   private determinarVencedorEmEmpate(partida: Partida): Time {
+    
     if (partida.time_casa.pontos !== partida.time_visitante.pontos) {
       return partida.time_casa.pontos > partida.time_visitante.pontos 
         ? partida.time_casa 
         : partida.time_visitante;
     }
+    
     return partida.time_casa.data_criacao < partida.time_visitante.data_criacao
       ? partida.time_casa
       : partida.time_visitante;
