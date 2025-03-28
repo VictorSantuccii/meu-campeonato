@@ -1,99 +1,128 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🏆 Meu Campeonato - API de Simulação de Campeonatos de Futebol
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 📌 Descrição
+Bem-vindo à API *Meu Campeonato*! Este projeto foi desenvolvido para atender ao pedido do nosso cliente José Gustavo, um apaixonado por futebol e tecnologia. A aplicação permite simular campeonatos de futebol de bairro, seguindo um sistema eliminatório que inicia nas quartas de final.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Tecnologias Utilizadas
+- **NestJS** - Framework para Node.js
+- **TypeORM** - ORM para interagir com o banco de dados
+- **Docker** - Contêinerização da aplicação
+- **Dotenv** - Gerenciamento de variáveis de ambiente
+- **Jest** - Testes automatizados
 
-## Description
+## 📂 Estrutura do Projeto
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```sh
+.
+├── src
+│   ├── campeonato
+│   │   ├── dto
+│   │   ├── __tests__
+│   │   ├── Entities
+│   │   ├── campeonato.module.ts
+│   │   ├── campeonato.service.ts
+│   │   ├── campeonato.controller.ts
+│   ├── partida
+│   │   ├── dto
+│   │   ├── __tests__
+│   │   ├── Entities
+│   │   ├── partida.module.ts
+│   │   ├── partida.service.ts
+│   │   ├── partida.controller.ts
+│   ├── time
+│   │   ├── dto
+│   │   ├── __tests__
+│   │   ├── Entities
+│   │   ├── time.module.ts
+│   │   ├── time.service.ts
+│   │   ├── time.controller.ts
+│   ├── app.module.ts
+│   ├── main.ts
+│   ├── data-source.ts
+├── test
+├── .env
+├── .env.example
+├── docker-compose.yml
+├── Dockerfile
+├── package.json
+└── tsconfig.json
 ```
 
-## Compile and run the project
+## ⚽️ Regras do Campeonato
+- **O campeonato começa nas quartas de final**, com **8 times**;
+- **Perdeu, está fora**! Os times eliminados deixam o campeonato;
+- **Quartas de final** → 4 jogos sorteados (cada time joga uma vez);
+- **Semifinais** → 2 jogos sorteados (cada time joga uma vez);
+- **Disputa de 3º lugar** → Entre os perdedores das semifinais;
+- **Final** → Vencedores das semifinais disputam o 🏆;
+- **Critérios de desempate**:
+  1. Maior pontuação acumulada (gols a favor +1 ponto, gols sofridos -1 ponto);
+  2. Em caso de novo empate, vence o time inscrito primeiro.
 
-```bash
-# development
-$ npm run start
+## 🛠 Configuração do Ambiente
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+### 1️⃣ Clonar o repositório
+```sh
+git clone https://github.com/VictorSantuccii/desafio-backend-irroba.git
+cd meu-campeonato
 ```
 
-## Run tests
+### 2️⃣ Configurar variáveis de ambiente
+Renomeie o arquivo `.env.example` para `.env` e configure as variáveis necessárias.
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+### 3️⃣ Subir a aplicação com Docker
+```sh
+docker-compose up --build
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
+### 4️⃣ Rodar a aplicação sem Docker
+Instale as dependências:
+```sh
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Inicie a aplicação:
+```sh
+npm run start:dev
+```
 
-## Resources
+### 5️⃣ Executar Testes
+```sh
+npm test
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## 📌 Endpoints Principais
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 🏆 Campeonato
+- **Criar um campeonato**
+  ```sh
+  POST http://localhost:3000/api/campeonatos
+  ```
+- **Buscar campeonato por ID**
+  ```sh
+  GET http://localhost:3000/api/campeonatos/1
+  ```
+- **Iniciar um campeonato**
+  ```sh
+  POST http://localhost:3000/api/campeonatos/1/iniciar
+  ```
 
-## Support
+### ⚽️ Times
+- **Adicionar times a um campeonato**
+  ```sh
+  POST http://localhost:3000/api/times/campeonato/1
+  ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 🏁 Partidas
+- **Simular uma partida do campeonato**
+  ```sh
+  POST http://localhost:3000/api/partidas/1/simular/
+  ```
+- **Partidas concluídas e avançar de fase**
+  ```sh
+  POST http://localhost:3000/api/partidas/campeonato/1/proxima-fase
+  ```
 
-## Stay in touch
+## 🏆 Considerações Finais
+Este projeto é de um desafio em backend, e segue boas práticas de desenvolvimento com NestJS, incluindo organização modular, uso de DTOs, entidades bem definidas e cobertura de testes automatizados.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
