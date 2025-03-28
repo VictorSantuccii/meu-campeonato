@@ -18,7 +18,18 @@ export class TimeService {
     const campeonato = await this.campeonatoService.buscarPorId(campeonatoId);
     
     if (campeonato.times && campeonato.times.length >= 8) {
-      throw new BadRequestException('O campeonato já possui 8 times');
+      throw new BadRequestException('O campeonato já possui 8 times.');
+    }
+
+    const timeExistente = await this.timeRepository.findOne({
+      where: {
+        nome: dto.nome,
+        campeonato: { id: campeonatoId }
+      }
+    });
+
+    if (timeExistente) {
+      throw new BadRequestException('Já existe um time com esse nome no campeonato.');
     }
 
     const time = this.timeRepository.create({

@@ -22,6 +22,7 @@ describe('TimeService', () => {
           useValue: {
             create: jest.fn(),
             save: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -56,12 +57,23 @@ describe('TimeService', () => {
       await expect(service.adicionarTime(1, {} as CriarTimeDto)).rejects.toThrow(BadRequestException);
     });
 
+    it('should throw BadRequestException when time with same name already exists in campeonato', async () => {
+      const campeonato = { id: 1, times: [] };
+      const dto: CriarTimeDto = { nome: 'Time Existente', campeonatoId: 1 };
+
+      jest.spyOn(campeonatoService, 'buscarPorId').mockResolvedValue(campeonato as any);
+      jest.spyOn(timeRepository, 'findOne').mockResolvedValue({ id: 1, nome: 'Time Existente' } as any);
+
+      await expect(service.adicionarTime(1, dto)).rejects.toThrow(BadRequestException);
+    });
+
     it('should create and save a new time when conditions are met', async () => {
       const campeonato = { id: 1, times: [] };
       const dto: CriarTimeDto = { nome: 'Time Teste', campeonatoId: 1};
       const expectedTime = { id: 1, ...dto, campeonato };
 
       jest.spyOn(campeonatoService, 'buscarPorId').mockResolvedValue(campeonato as any);
+      jest.spyOn(timeRepository, 'findOne').mockResolvedValue(null);
       jest.spyOn(timeRepository, 'create').mockReturnValue(expectedTime as any);
       jest.spyOn(timeRepository, 'save').mockResolvedValue(expectedTime as any);
 
