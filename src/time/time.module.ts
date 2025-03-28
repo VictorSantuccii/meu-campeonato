@@ -8,7 +8,7 @@ import { Campeonato } from '../campeonato/Entities/campeonato.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Time, Campeonato]), // Adicione as entidades necessárias
+    TypeOrmModule.forFeature([Time, Campeonato]), 
     forwardRef(() => CampeonatoModule)
   ],
   controllers: [TimeController],

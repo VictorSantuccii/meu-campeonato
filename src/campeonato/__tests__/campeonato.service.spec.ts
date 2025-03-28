@@ -9,7 +9,7 @@ import { CriarCampeonatoDto } from '../dto/criar.campeonato.dto';
 import { FasePartida } from '../../partida/Entities/partida.entity';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 
-// Mock data with all required properties
+
 const createMockCampeonato = (overrides?: Partial<Campeonato>): Campeonato => ({
   id: 1,
   nome: 'Campeonato Teste',

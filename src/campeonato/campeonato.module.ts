@@ -10,7 +10,7 @@ import { Time } from '../time/Entities/time.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Campeonato, Partida, Time]), // Adicione todas as entidades aqui
+    TypeOrmModule.forFeature([Campeonato, Partida, Time]), 
     forwardRef(() => TimeModule),
     forwardRef(() => PartidaModule)
   ],
