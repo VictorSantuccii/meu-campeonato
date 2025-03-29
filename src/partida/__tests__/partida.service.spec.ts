@@ -14,7 +14,6 @@ describe('PartidaService', () => {
   let timeRepository: Repository<Time>;
   let campeonatoRepository: Repository<Campeonato>;
 
- 
   const mockTime = (overrides?: Partial<Time>): Time => ({
     id: overrides?.id || 1,
     nome: 'Time Teste',
@@ -44,7 +43,7 @@ describe('PartidaService', () => {
     jogada: false,
     gols_casa: 0,
     gols_visitante: 0,
-    time_casa: mockTime(),
+    time_casa: mockTime({}),
     time_visitante: mockTime({ id: 2 }),
     campeonato: mockCampeonato(),
     ...overrides
@@ -122,8 +121,8 @@ describe('PartidaService', () => {
     it('should define campeao when fase is FINAL', async () => {
       const partida = mockPartida({
         fase: FasePartida.FINAL,
-        gols_casa: 2,
-        gols_visitante: 1
+        gols_casa: 1,
+        gols_visitante: 3
       });
       jest.spyOn(partidaRepository, 'findOne').mockResolvedValue(partida);
 
@@ -131,8 +130,8 @@ describe('PartidaService', () => {
       
       expect(campeonatoRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
-          campeaoId: 1,
-          viceId: 2
+          campeaoId: 2,
+          viceId: 1
         })
       );
     });
@@ -140,8 +139,10 @@ describe('PartidaService', () => {
     it('should define terceiro when fase is TERCEIRO_LUGAR', async () => {
       const partida = mockPartida({
         fase: FasePartida.TERCEIRO_LUGAR,
-        gols_casa: 1,
-        gols_visitante: 0
+        gols_casa: 0,
+        gols_visitante: 2,
+        time_casa: mockTime({ id: 1 }),
+        time_visitante: mockTime({ id: 2 })
       });
       jest.spyOn(partidaRepository, 'findOne').mockResolvedValue(partida);
 
@@ -149,7 +150,7 @@ describe('PartidaService', () => {
       
       expect(campeonatoRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
-          terceiroId: 1
+          terceiroId: 2
         })
       );
     });
