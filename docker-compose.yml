@@ -11,18 +11,21 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
+      - ./mysql-init:/docker-entrypoint-initdb.d 
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pcampeonato"]
       interval: 5s
-      timeout: 3s
-      retries: 10
+      timeout: 10s
+      retries: 20
+      start_period: 30s  
     networks:
       - campeonato_net
     restart: unless-stopped
 
   app:
-    build: .
+    build:
+      context: .
+      target: production 
     container_name: campeonato_app
     depends_on:
       mysql_db:
@@ -36,6 +39,10 @@ services:
       - DB_PASSWORD=campeonato
       - DB_DATABASE=meucampeonato
       - PORT=3000
+      - NODE_ENV=production
+      - DB_RETRY_ATTEMPTS=10
+      - DB_RETRY_DELAY=5000
+      - DB_CONNECT_TIMEOUT=30000
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -44,9 +51,11 @@ services:
     restart: unless-stopped
     stdin_open: true
     tty: true
+    entrypoint: ["sh", "-c", "sleep 20 && node dist/main.js"]  # Delay generoso
 
 volumes:
   mysql_data:
+    driver: local
 
 networks:
   campeonato_net:
