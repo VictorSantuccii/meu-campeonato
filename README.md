@@ -12,7 +12,7 @@ Bem-vindo à API *Meu Campeonato*! Este projeto foi desenvolvido para atender ao
 
 ## 📂 Estrutura do Projeto
 
-```sh
+```
 .
 ├── src
 │   ├── campeonato
