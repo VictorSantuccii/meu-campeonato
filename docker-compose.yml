@@ -4,20 +4,21 @@ services:
   mysql_db:
     image: mysql:8.0
     container_name: campeonato_mysql
+    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: campeonato
-      MYSQL_DATABASE: meucampeonato
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     ports:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d 
+      - ./mysql-init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pcampeonato"]
+      test: ["CMD-SHELL", "mysqladmin ping -u${DB_USERNAME} -p${DB_PASSWORD}"]
       interval: 5s
       timeout: 10s
       retries: 20
-      start_period: 30s  
+      start_period: 40s
     networks:
       - campeonato_net
     restart: unless-stopped
@@ -25,21 +26,22 @@ services:
   app:
     build:
       context: .
-      target: production 
+      target: production
     container_name: campeonato_app
+    env_file: .env
     depends_on:
       mysql_db:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
     environment:
       - DB_HOST=mysql_db
-      - DB_PORT=3306
-      - DB_USERNAME=root
-      - DB_PASSWORD=campeonato
-      - DB_DATABASE=meucampeonato
-      - PORT=3000
-      - NODE_ENV=production
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - PORT=${PORT}
+      - NODE_ENV=builder
       - DB_RETRY_ATTEMPTS=10
       - DB_RETRY_DELAY=5000
       - DB_CONNECT_TIMEOUT=30000
@@ -51,7 +53,7 @@ services:
     restart: unless-stopped
     stdin_open: true
     tty: true
-    entrypoint: ["sh", "-c", "sleep 20 && node dist/main.js"]  # Delay generoso
+    entrypoint: ["sh", "-c", "if [ ! -f dist/main.js ]; then npm run build; fi && sleep 30 && node dist/main.js"]
 
 volumes:
   mysql_data:
