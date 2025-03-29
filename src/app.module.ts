@@ -9,7 +9,16 @@ import { TimeModule } from './time/time.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({...AppDataSource.options, autoLoadEntities: true}), 
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => {
+        return {
+          ...AppDataSource.options,
+          autoLoadEntities: true,
+          retryAttempts: 5,
+          retryDelay: 5000
+        };
+      },
+    }),
     CampeonatoModule,
     PartidaModule,
     TimeModule
