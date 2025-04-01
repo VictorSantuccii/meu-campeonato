@@ -72,7 +72,7 @@ Renomeie o arquivo `.env.example` para `.env` e configure as variáveis necessá
 
 ### 3️⃣ Subir a aplicação com Docker
 ```sh
-docker-compose up --build
+docker compose up
 ```
 
 ### 4️⃣ Rodar a aplicação sem Docker
